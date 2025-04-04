@@ -134,10 +134,8 @@ const Slideshow = () => {
                 WebkitUserSelect: 'none',
                 MozUserSelect: 'none',
                 msUserSelect: 'none',
-                WebkitTouchCallout: 'none',
-                draggable: 'false'
+                WebkitTouchCallout: 'none'
               }}
-              draggable={false}
             />
           </div>
         ))}
