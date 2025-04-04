@@ -12,6 +12,20 @@ const Slideshow = () => {
   const [showControls, setShowControls] = useState(true);
   const [controlsTimeout, setControlsTimeout] = useState<NodeJS.Timeout | null>(null);
 
+  // Prevent right-click context menu
+  useEffect(() => {
+    const handleContextMenu = (e: MouseEvent) => {
+      e.preventDefault();
+      return false;
+    };
+    
+    document.addEventListener('contextmenu', handleContextMenu);
+    
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+    };
+  }, []);
+
   const handleMouseMove = () => {
     setShowControls(true);
     
@@ -116,8 +130,14 @@ const Slideshow = () => {
               onContextMenu={(e) => e.preventDefault()}
               style={{ 
                 pointerEvents: 'none', 
-                userSelect: 'none' 
+                userSelect: 'none',
+                WebkitUserSelect: 'none',
+                MozUserSelect: 'none',
+                msUserSelect: 'none',
+                WebkitTouchCallout: 'none',
+                draggable: 'false'
               }}
+              draggable={false}
             />
           </div>
         ))}

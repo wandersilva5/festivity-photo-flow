@@ -7,7 +7,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PhotoGrid from '@/components/PhotoGrid';
 import { usePhotoContext } from '@/context/PhotoContext';
 import { useAuth } from '@/context/AuthContext';
-import { Home, Trash2, LogOut } from 'lucide-react';
+import { Home, Trash2, LogOut, FolderOpen } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const Admin = () => {
-  const { pendingPhotos, photos, approvePhoto, rejectPhoto, clearAllPhotos } = usePhotoContext();
+  const { pendingPhotos, photos, approvePhoto, rejectPhoto, deletePhoto, clearAllPhotos } = usePhotoContext();
   const { logout } = useAuth();
 
   return (
@@ -76,10 +76,12 @@ const Admin = () => {
 
         <Tabs defaultValue="pending" className="w-full">
           <TabsList className="grid w-full grid-cols-2 mb-6">
-            <TabsTrigger value="pending">
-              Pending Review ({pendingPhotos.length})
+            <TabsTrigger value="pending" className="flex items-center">
+              <FolderOpen className="mr-2 h-4 w-4" />
+              Pending Approval ({pendingPhotos.length})
             </TabsTrigger>
-            <TabsTrigger value="approved">
+            <TabsTrigger value="approved" className="flex items-center">
+              <FolderOpen className="mr-2 h-4 w-4" />
               Approved Photos ({photos.length})
             </TabsTrigger>
           </TabsList>
@@ -98,6 +100,7 @@ const Admin = () => {
                   mode="admin" 
                   onApprove={approvePhoto}
                   onReject={rejectPhoto}
+                  onDelete={(id) => deletePhoto(id, false)}
                 />
               </CardContent>
             </Card>
@@ -117,17 +120,11 @@ const Admin = () => {
                     <Button>Launch Slideshow</Button>
                   </Link>
                 </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                  {photos.map((photo) => (
-                    <div key={photo.id} className="relative aspect-[4/3] rounded-md overflow-hidden">
-                      <img 
-                        src={photo.dataUrl} 
-                        alt="Approved photo" 
-                        className="w-full h-full object-cover"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <PhotoGrid 
+                  photos={photos}
+                  mode="approved" 
+                  onDelete={(id) => deletePhoto(id, true)}
+                />
               </CardContent>
             </Card>
           </TabsContent>

@@ -8,9 +8,10 @@ import { cn } from '@/lib/utils';
 
 interface PhotoGridProps {
   photos: Photo[];
-  mode: 'admin' | 'slideshow';
+  mode: 'admin' | 'slideshow' | 'approved';
   onApprove?: (id: string) => void;
   onReject?: (id: string) => void;
+  onDelete?: (id: string) => void;
   className?: string;
 }
 
@@ -19,6 +20,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
   mode,
   onApprove,
   onReject,
+  onDelete,
   className
 }) => {
   if (photos.length === 0) {
@@ -52,6 +54,13 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
                     <X className="h-5 w-5" />
                   </Button>
                   <Button 
+                    onClick={() => onDelete?.(photo.id)} 
+                    size="icon" 
+                    variant="secondary"
+                  >
+                    <Trash2 className="h-5 w-5" />
+                  </Button>
+                  <Button 
                     onClick={() => onApprove?.(photo.id)} 
                     size="icon" 
                     variant="default"
@@ -65,8 +74,33 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
         ))}
       </div>
     );
+  } else if (mode === 'approved') {
+    return (
+      <div className={cn("grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4", className)}>
+        {photos.map((photo) => (
+          <div key={photo.id} className="relative aspect-[4/3] rounded-md overflow-hidden group">
+            <img 
+              src={photo.dataUrl} 
+              alt="Approved photo" 
+              className="w-full h-full object-cover"
+            />
+            {onDelete && (
+              <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <Button 
+                  onClick={() => onDelete(photo.id)} 
+                  size="icon" 
+                  variant="destructive"
+                >
+                  <Trash2 className="h-5 w-5" />
+                </Button>
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    );
   } else {
-    // For slideshow mode, return a single card
+    // For slideshow mode
     return (
       <div className={cn("w-full h-full", className)}>
         {photos.map((photo, index) => (
@@ -78,6 +112,11 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
               src={photo.dataUrl} 
               alt={`Photo ${index + 1}`}
               className="w-full h-full object-contain"
+              onContextMenu={(e) => e.preventDefault()}
+              style={{ 
+                pointerEvents: 'none', 
+                userSelect: 'none' 
+              }}
             />
           </div>
         ))}

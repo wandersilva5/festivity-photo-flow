@@ -10,6 +10,7 @@ interface PhotoContextProps {
   addPhoto: (dataUrl: string) => void;
   approvePhoto: (id: string) => void;
   rejectPhoto: (id: string) => void;
+  deletePhoto: (id: string, isApproved: boolean) => void;
   clearAllPhotos: () => void;
 }
 
@@ -81,6 +82,16 @@ export const PhotoProvider = ({ children }: PhotoProviderProps) => {
     toast.info('Photo rejected');
   };
 
+  const deletePhoto = (id: string, isApproved: boolean) => {
+    if (isApproved) {
+      setPhotos((prevPhotos) => prevPhotos.filter(photo => photo.id !== id));
+      toast.info('Approved photo deleted');
+    } else {
+      setPendingPhotos((prevPending) => prevPending.filter(photo => photo.id !== id));
+      toast.info('Pending photo deleted');
+    }
+  };
+
   const clearAllPhotos = () => {
     setPhotos([]);
     setPendingPhotos([]);
@@ -95,6 +106,7 @@ export const PhotoProvider = ({ children }: PhotoProviderProps) => {
     addPhoto,
     approvePhoto,
     rejectPhoto,
+    deletePhoto,
     clearAllPhotos
   };
 
