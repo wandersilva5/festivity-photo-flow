@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import QRCode from 'qrcode.react';
+import { QRCodeSVG } from 'qrcode.react';
 
 interface QRCodeDisplayProps {
   value: string;
@@ -28,7 +28,7 @@ const QRCodeDisplay: React.FC<QRCodeDisplayProps> = ({
     <Card className="border-2 border-primary">
       <CardContent className="flex flex-col items-center justify-center p-6 space-y-4">
         <div className="p-3 bg-white rounded-lg">
-          <QRCode value={qrValue} size={size} renderAs="svg" />
+          <QRCodeSVG value={qrValue} size={size} />
         </div>
         <div className="text-center">
           <p className="text-sm text-muted-foreground">Scan to take photos!</p>

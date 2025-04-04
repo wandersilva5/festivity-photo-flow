@@ -1,6 +1,6 @@
 
 import React, { createContext, useState, useContext, ReactNode, useEffect } from 'react';
-import { toast } from "@/components/ui/sonner";
+import { toast } from "sonner";
 import { Photo } from '@/types/photo';
 import { v4 as uuidv4 } from 'uuid';
 
