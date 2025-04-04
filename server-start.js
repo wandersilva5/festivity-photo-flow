@@ -1,3 +1,3 @@
 
 // Simple script to start the server
-require('./server');
+import './server.js';
