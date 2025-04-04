@@ -1,7 +1,7 @@
 
 import React, { useRef, useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
-import { Camera, RotateCcw, Upload, Check } from 'lucide-react';
+import { Camera, RotateCcw, Upload, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { usePhotoContext } from '@/context/PhotoContext';
 
@@ -11,6 +11,7 @@ const PhotoCapture: React.FC = () => {
   const [stream, setStream] = useState<MediaStream | null>(null);
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
   const { addPhoto } = usePhotoContext();
 
@@ -80,19 +81,25 @@ const PhotoCapture: React.FC = () => {
     initCamera();
   };
 
-  const submitPhoto = () => {
+  const submitPhoto = async () => {
     if (capturedImage) {
-      addPhoto(capturedImage);
-      setCapturedImage(null);
-      
-      // Clear toast and prepare to take another photo
-      toast({
-        title: "Photo Submitted!",
-        description: "Your photo will be reviewed by the host",
-      });
-      
-      // Delay restarting camera slightly for better UX
-      setTimeout(initCamera, 1000);
+      setIsSubmitting(true);
+      try {
+        await addPhoto(capturedImage);
+        setCapturedImage(null);
+        
+        // Delay restarting camera slightly for better UX
+        setTimeout(initCamera, 1000);
+      } catch (error) {
+        console.error('Error submitting photo:', error);
+        toast({
+          title: "Error",
+          description: "Failed to submit photo. Please try again.",
+          variant: "destructive"
+        });
+      } finally {
+        setIsSubmitting(false);
+      }
     }
   };
 
@@ -134,6 +141,7 @@ const PhotoCapture: React.FC = () => {
               variant="outline" 
               className="flex-1"
               onClick={retakePhoto}
+              disabled={isSubmitting}
             >
               <RotateCcw className="mr-2 h-5 w-5" />
               Retake
@@ -141,9 +149,14 @@ const PhotoCapture: React.FC = () => {
             <Button 
               className="flex-1 bg-secondary hover:bg-secondary/90"
               onClick={submitPhoto}
+              disabled={isSubmitting}
             >
-              <Upload className="mr-2 h-5 w-5" />
-              Send
+              {isSubmitting ? (
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              ) : (
+                <Upload className="mr-2 h-5 w-5" />
+              )}
+              {isSubmitting ? "Sending..." : "Send"}
             </Button>
           </>
         )}

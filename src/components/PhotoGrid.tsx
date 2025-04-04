@@ -2,17 +2,18 @@
 import React from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Check, X, Trash2 } from "lucide-react";
+import { Check, X, Trash2, Loader2 } from "lucide-react";
 import { Photo } from '@/types/photo';
 import { cn } from '@/lib/utils';
 
 interface PhotoGridProps {
   photos: Photo[];
   mode: 'admin' | 'slideshow' | 'approved';
-  onApprove?: (id: string) => void;
-  onReject?: (id: string) => void;
-  onDelete?: (id: string) => void;
+  onApprove?: (id: string) => Promise<void>;
+  onReject?: (id: string) => Promise<void>;
+  onDelete?: (id: string) => Promise<void>;
   className?: string;
+  loading?: boolean;
 }
 
 const PhotoGrid: React.FC<PhotoGridProps> = ({
@@ -21,8 +22,20 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
   onApprove,
   onReject,
   onDelete,
-  className
+  className,
+  loading = false
 }) => {
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center h-[300px] p-8 text-center">
+        <Loader2 className="h-8 w-8 animate-spin mb-4" />
+        <p className="text-muted-foreground">
+          Loading photos...
+        </p>
+      </div>
+    );
+  }
+
   if (photos.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center h-[300px] p-8 text-center">
@@ -50,6 +63,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
                     onClick={() => onReject?.(photo.id)} 
                     size="icon" 
                     variant="destructive"
+                    disabled={loading}
                   >
                     <X className="h-5 w-5" />
                   </Button>
@@ -57,6 +71,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
                     onClick={() => onDelete?.(photo.id)} 
                     size="icon" 
                     variant="secondary"
+                    disabled={loading}
                   >
                     <Trash2 className="h-5 w-5" />
                   </Button>
@@ -64,6 +79,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
                     onClick={() => onApprove?.(photo.id)} 
                     size="icon" 
                     variant="default"
+                    disabled={loading}
                   >
                     <Check className="h-5 w-5" />
                   </Button>
@@ -90,6 +106,7 @@ const PhotoGrid: React.FC<PhotoGridProps> = ({
                   onClick={() => onDelete(photo.id)} 
                   size="icon" 
                   variant="destructive"
+                  disabled={loading}
                 >
                   <Trash2 className="h-5 w-5" />
                 </Button>

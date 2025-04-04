@@ -2,12 +2,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PhotoGrid from '@/components/PhotoGrid';
 import { usePhotoContext } from '@/context/PhotoContext';
 import { useAuth } from '@/context/AuthContext';
-import { Home, Trash2, LogOut, FolderOpen } from 'lucide-react';
+import { Home, Trash2, LogOut, FolderOpen, RefreshCw } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 const Admin = () => {
-  const { pendingPhotos, photos, approvePhoto, rejectPhoto, deletePhoto, clearAllPhotos } = usePhotoContext();
+  const { pendingPhotos, photos, approvePhoto, rejectPhoto, deletePhoto, clearAllPhotos, refreshPhotos, loading } = usePhotoContext();
   const { logout } = useAuth();
 
   return (
@@ -36,9 +36,18 @@ const Admin = () => {
           </div>
 
           <div className="flex space-x-2 mt-4 sm:mt-0">
+            <Button 
+              variant="outline" 
+              onClick={refreshPhotos} 
+              disabled={loading}
+            >
+              <RefreshCw className={`mr-2 h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+              Refresh
+            </Button>
+
             <AlertDialog>
               <AlertDialogTrigger asChild>
-                <Button variant="destructive">
+                <Button variant="destructive" disabled={loading}>
                   <Trash2 className="mr-2 h-4 w-4" />
                   Clear All Photos
                 </Button>
@@ -101,6 +110,7 @@ const Admin = () => {
                   onApprove={approvePhoto}
                   onReject={rejectPhoto}
                   onDelete={(id) => deletePhoto(id, false)}
+                  loading={loading}
                 />
               </CardContent>
             </Card>
@@ -124,6 +134,7 @@ const Admin = () => {
                   photos={photos}
                   mode="approved" 
                   onDelete={(id) => deletePhoto(id, true)}
+                  loading={loading}
                 />
               </CardContent>
             </Card>
