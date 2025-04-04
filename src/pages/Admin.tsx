@@ -6,7 +6,8 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import PhotoGrid from '@/components/PhotoGrid';
 import { usePhotoContext } from '@/context/PhotoContext';
-import { Home, Trash2 } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { Home, Trash2, LogOut } from 'lucide-react';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -21,6 +22,7 @@ import {
 
 const Admin = () => {
   const { pendingPhotos, photos, approvePhoto, rejectPhoto, clearAllPhotos } = usePhotoContext();
+  const { logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-background py-8 px-4">
@@ -57,6 +59,11 @@ const Admin = () => {
                 </AlertDialogFooter>
               </AlertDialogContent>
             </AlertDialog>
+
+            <Button variant="outline" onClick={logout}>
+              <LogOut className="mr-2 h-4 w-4" />
+              Logout
+            </Button>
 
             <Link to="/">
               <Button variant="outline">

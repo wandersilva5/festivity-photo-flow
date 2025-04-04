@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import QRCodeDisplay from '@/components/QRCodeDisplay';
-import { Camera, Shield, Presentation } from 'lucide-react';
+import { Camera, Shield, Presentation, Lock } from 'lucide-react';
 
 const Index = () => {
   return (
@@ -48,10 +48,10 @@ const Index = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex flex-col space-y-2">
-                  <Link to="/admin">
+                  <Link to="/login">
                     <Button className="w-full" size="lg">
-                      <Shield className="mr-2 h-5 w-5" />
-                      Admin Dashboard
+                      <Lock className="mr-2 h-5 w-5" />
+                      Admin Login
                     </Button>
                   </Link>
                   <p className="text-xs text-muted-foreground">

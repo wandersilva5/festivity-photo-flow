@@ -113,6 +113,11 @@ const Slideshow = () => {
               src={photo.dataUrl} 
               alt={`Photo ${index + 1}`} 
               className="w-full h-full object-contain"
+              onContextMenu={(e) => e.preventDefault()}
+              style={{ 
+                pointerEvents: 'none', 
+                userSelect: 'none' 
+              }}
             />
           </div>
         ))}
